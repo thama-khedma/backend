@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken"
 import otpGenerator from "otp-generator";
 import User from "../Model/User.js"
 import sendEmail from "../middleware/nodemail.js"
+import resetpassword from "../views/codetemplate.js";
+import verifymail from "../views/templates.js";
 
 
 
@@ -38,6 +40,8 @@ export async function RegisterUser(req , res){
       last_name,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
+      
+       
     });
 
 
@@ -48,7 +52,9 @@ export async function RegisterUser(req , res){
       
 
    const message = `${process.env.URL}/user/verify/${user.id}`;
-   await sendEmail(user.email, "Verify Email", message);
+   const name = +user.first_name+" "+user.last_name;
+   const v = await verifymail(name,message);
+   await sendEmail(user.email, "Verify Email", v);
 
    
     
@@ -80,8 +86,10 @@ export async function Login(req,res){
     res.status(400).send("All input is required");
   }
     // Validate if user exist in our database
-    const user = await User.findOne({ email: email });
-
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if(user.email!=req.body.email){
+      res.send('Please Verifiez Ton Email')
+    }
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
       
@@ -90,7 +98,7 @@ export async function Login(req,res){
       const token = jwt.sign({_id:user._id}, 'privateKey')
       res.header('x-access-token',token).status(200).json({message : "login avec succeés",user});
      
-  
+     
      
     }
     
@@ -100,34 +108,65 @@ export async function Login(req,res){
   // Our register logic ends here
 }
 export async function UpdateUser(req,res){
-  const  id=req.params.id;
-
-    var user = await User.findOneAndUpdate({
-      _id:id,
-        email: req.body.email
-    })
-    res.status(200).json("Update ")
-}
+  const  { first_name , last_name, email , password } = req.body;
+  const  encryptedPassword = await bcrypt.hash(password, 10);
+    var user = await User.findOne({_id:req.params.id})
+    if(user)
+    {user.first_name=first_name;
+      user.last_name=last_name;
+      user.email=email;
+      user.password=encryptedPassword;
+      user.image=`${req.file.filename}`;
+      user.save();
+      res.status(200).json("Update ",user)
+    }else
+    res.status(404).json("Not found ")
+  }   
 export async function resetPass(req,res){
   
   var user = await User.findOne({
     email:req.body.email});
 
+    
     if(!user){
       res.json({
         msg:'user not found'
       })
-    }else{
+    }else{ 
       var a = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
       user.code=a;
       user.save();
       const message = `votre code est `+user.code;
+      
+      const v = await resetpassword(message)
       await sendEmail(user.email, "Verify Email", message);
       res.send({
         message:"email envoyer pour le code de mise a jour du mot de passe"
       })
     }
 
+}
+export async function forgetPass(req,res){
+  try {
+    const user = await User.findOne({ code:req.body.code });
+    if(user)
+    {
+      var password=req.body.password;
+      const  encryptedPassword = await bcrypt.hash(password, 10);
+      user.password=encryptedPassword;
+      user.code="";
+      user.save();
+      res.send("password change sucessfully");
+      
+    }
+    
+   
+   
+
+    
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 
@@ -155,7 +194,7 @@ export async function deleteUser(req,res){
   
       var user = await User.findOneAndRemove({
         _id:id,
-          first_name: req.body.first_name
+        
       })
       res.status(200).json("Utulisateur Supprime")
   
@@ -163,11 +202,33 @@ export async function deleteUser(req,res){
 
 
 
-export async function getAllUsers(req,res){
+export async function GetUser(req,res){
+  
+  
   try {
-      const users = await User.find()
-      res.json(users)
+
+    const  id=req.params.id;
+
+    var user = await User.findOne({_id:id})
+    if(user)
+    {
+      res.send(user)
+      res.status(200).json(user)
+    }else
+    res.status(404).json("user not found")
   } catch (error) {
-      res.status(500).json({ message: error.message })
+    console.log("prob");
   }
+
+}
+
+export async function getAllUsers(req,res){
+  await User
+  .find({})
+  .then(docs=>{
+      res.status(200).json(docs)
+  })
+  .catch(err=>{
+      res.status(500).json({error:err});
+  });
 }

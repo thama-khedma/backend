@@ -36,4 +36,36 @@ export async function UpdateEntreprise(req,res){
   }
 
  
+  export async function AddEntreprise(req,res){
     
+      var entreprise = await Entreprise.create({
+         name : req.body.name,
+         email : req.body.email,
+         user : req.body.user,
+         location:{
+          type : req.body.location.type,
+
+         }
+      })
+      entreprise.save;
+    
+  }
+
+  export async function find_Entreprise(req,res){
+    try {
+      const latitude   =  req.body.latitude;
+      const longitude  =  req.body.longitude;
+
+      const EntrepriseData = await Entreprise.aggregate({
+        $Near :{type:"Point",coordinates:[parseFloat(longitude),parseFloat(latitude)]},
+        key : "location",
+        maxDistance   :  parseFloat(1000)*1609,
+        distanceField:"dist.calculated",
+        spherical : true 
+      });
+      res.status(200).send({message : "Entreprise Trouve", data: EntrepriseData})
+      
+    } catch (error) {
+      res.status(400).send({ message : "Echec"})
+    }
+  }

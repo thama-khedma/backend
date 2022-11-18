@@ -8,6 +8,7 @@ app.use(bodyparser.json())
 const { Schema , model} = mongoose;
 
 
+
 const UserSchema = mongoose.Schema({
       first_name: {
         type: String,
@@ -27,10 +28,15 @@ const UserSchema = mongoose.Schema({
       {
         type: String
       },
+      image :
+      {
+        type: String
+      },
       verified: {
         type: Boolean,
         default: false,
       },
+
       
       
     },

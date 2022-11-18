@@ -1,11 +1,2 @@
-# Temporary files/folders
-
-.vscode
-npm-debug.log
-
-# Permanenet files/folders
-
 node_modules
-Dockerfile
-.dockerignore   
-docker-compose.yml
+npm-debug.log

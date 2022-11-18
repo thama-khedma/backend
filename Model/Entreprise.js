@@ -8,20 +8,37 @@ app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json())
 const { Schema , model} = mongoose;
 
+const LocationSchema = mongoose.Schema({
+  location: {
+    type: {
+      type: String, 
+      enum: ['Point'], 
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
+  }
+})
 
 const EntrepriseSchema = mongoose.Schema({
       name: {
         type: String,
         require: true,
       },
-      video: {
+      email: {
         type: String,
         required:true
       },
       user : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'user'
-    }
+      },  
+      location:{
+        type : LocationSchema
+      }
+     
       
     },
     
@@ -31,11 +48,12 @@ const EntrepriseSchema = mongoose.Schema({
   export function EntrepriseValidate(entreprise){
     const schema = Joi.object({
         name: Joi.string().min(4).max(10).required(),
-        video: Joi.string().required(),
+        email: Joi.string().required(),
     });
 
     return schema.validate(entreprise);
 }
 
-export default model("entreprise" ,  EntrepriseSchema  )
+export default model("entreprise" ,  EntrepriseSchema)
+
 
