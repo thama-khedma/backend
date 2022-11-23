@@ -110,17 +110,18 @@ export async function Login(req,res){
 export async function UpdateUser(req,res){
   const  { first_name , last_name, email , password } = req.body;
   const  encryptedPassword = await bcrypt.hash(password, 10);
-    var user = await User.findOne({_id:req.params.id})
-    if(user)
-    {user.first_name=first_name;
-      user.last_name=last_name;
+  const user =  await User.findOne({_id:req.params.id})
+    if(!user){
+      res.send("User introuvable")
+    }else{
+  user.first_name=first_name;
+  user.last_name=last_name;
       user.email=email;
       user.password=encryptedPassword;
-      user.image=`${req.file.filename}`;
       user.save();
-      res.status(200).json("Update ",user)
-    }else
-    res.status(404).json("Not found ")
+      res.json(user)
+    }
+    
   }   
 export async function resetPass(req,res){
   
@@ -214,10 +215,9 @@ export async function GetUser(req,res){
     {
       res.send(user)
       res.status(200).json(user)
-    }else
-    res.status(404).json("user not found")
+    }
   } catch (error) {
-    console.log("prob");
+    console.log("user not found");
   }
 
 }
@@ -232,3 +232,5 @@ export async function getAllUsers(req,res){
       res.status(500).json({error:err});
   });
 }
+
+

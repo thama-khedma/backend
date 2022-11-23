@@ -142,7 +142,7 @@ router.route('/Login') .post(Login)
  *         description: Some errors happend.
  *
  */
-router.route('/updateUser/:id').patch(UpdateUser);
+router.route('/updateUser/:id').post(UpdateUser);
 /**
  * @swagger
  * /user/resetpwd:

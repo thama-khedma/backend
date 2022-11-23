@@ -1,5 +1,6 @@
 
 import Entreprise from "../Model/Entreprise.js";
+import User from "../Model/User.js";
 
 
 export async function deleteEntreprise(req,res){
@@ -67,5 +68,21 @@ export async function UpdateEntreprise(req,res){
       
     } catch (error) {
       res.status(400).send({ message : "Echec"})
+    }
+  }
+
+  export async function GetEntreprise(req,res){
+    try {
+
+      const  id=req.params.id;
+  
+      var entreprise = await Entreprise.findOne({_id:id})
+      if(entreprise)
+      
+        res.send(entreprise)
+      
+      res.status(200).json(entreprise)
+    } catch (error) {
+      console.log("");
     }
   }
