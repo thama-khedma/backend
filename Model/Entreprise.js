@@ -6,21 +6,21 @@ import bodyparser from"body-parser" ;
 const app = express();
 app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json())
-const { Schema , model} = mongoose;
+const {model} = mongoose;
 
 const LocationSchema = mongoose.Schema({
-  location: {
+
     type: {
-      type: String, 
-      enum: ['Point'], 
+      type: String, // Don't do `{ location: { type: String } }`
+      enum: ['Point'], // 'location.type' must be 'Point'
       required: true
     },
     coordinates: {
-      type: [Number],
+      type: [Number,Number],
       required: true
     }
-  }
-})
+ 
+});
 
 const EntrepriseSchema = mongoose.Schema({
       name: {
@@ -35,9 +35,10 @@ const EntrepriseSchema = mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'user'
       },  
-      location:{
-        type : LocationSchema
+      location: {
+        type:LocationSchema
       }
+      
      
       
     },
@@ -53,7 +54,6 @@ const EntrepriseSchema = mongoose.Schema({
 
     return schema.validate(entreprise);
 }
-
+EntrepriseSchema.index({location:"2dsphere"})  
 export default model("entreprise" ,  EntrepriseSchema)
-
 

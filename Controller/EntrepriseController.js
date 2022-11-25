@@ -1,4 +1,5 @@
 
+import { parse } from "dotenv";
 import Entreprise from "../Model/Entreprise.js";
 import User from "../Model/User.js";
 
@@ -45,7 +46,7 @@ export async function UpdateEntreprise(req,res){
          user : req.body.user,
          location:{
           type : req.body.location.type,
-
+          coordinates : req.body.location.coordinates
          }
       })
       entreprise.save;
@@ -57,17 +58,21 @@ export async function UpdateEntreprise(req,res){
       const latitude   =  req.body.latitude;
       const longitude  =  req.body.longitude;
 
-      const EntrepriseData = await Entreprise.aggregate({
-        $Near :{type:"Point",coordinates:[parseFloat(longitude),parseFloat(latitude)]},
-        key : "location",
-        maxDistance   :  parseFloat(1000)*1609,
-        distanceField:"dist.calculated",
-        spherical : true 
-      });
-      res.status(200).send({message : "Entreprise Trouve", data: EntrepriseData})
+      const EntrepriseData = await Entreprise.aggregate([{
+        $geoNear: {
+          near:{type:"Point",coordinates:[parseFloat(longitude),parseFloat(latitude)]},
+          key :"location",
+          maxDistance   :  parseFloat(60)*1609,
+          distanceMultiplier: 0.000621371,
+          distanceField:"dist.calculated",
+          spherical : true 
+        }
+      }
+     ]);
+      res.status(200).send({success:true , message : "Entreprise Trouve", data: EntrepriseData})
       
     } catch (error) {
-      res.status(400).send({ message : "Echec"})
+      res.status(400).send({success:false,msg:error.message})
     }
   }
 
