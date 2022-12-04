@@ -7,6 +7,8 @@ import swaggerUi from 'swagger-ui-express'
 import passport from "passport"
 import dotenv from"dotenv" ;
 import session from "express-session"
+import multer from "multer";
+import OffreRoute from './Routes/Offre.js'
 
 import GoogleStrategy from "passport-google-oauth2"
 import FacebookStrategy from "passport-facebook"
@@ -15,7 +17,7 @@ dotenv.config({path:'./config/config.env' });
 
 const app = express();
 app.use(express.urlencoded({extended: true, limit: '50mb'}));
-
+app.use("/img",express.static("public"));
 const options ={
   definition: {
     openapi : '3.0.0',
@@ -142,6 +144,7 @@ app.use(express.json());
 
 app.use("/user", UserRoute);
 app.use("/entreprise",EntrepriseRoute)
+app.use("/offre",OffreRoute)
 
 
 
@@ -151,3 +154,4 @@ app.use("/entreprise",EntrepriseRoute)
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+

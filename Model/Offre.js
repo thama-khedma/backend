@@ -9,36 +9,23 @@ const {model} = mongoose;
 
 
 
-const UserSchema = mongoose.Schema({
-      first_name: {
+const OffreSchema = mongoose.Schema({
+      name: {
         type: String,
         require: true,
       },
-      last_name: {
+      description: {
         type: String,
        
       },
-      email: {
-        type: String,
+      entreprise: {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'entreprise'
       },
-      password:{
-        type: String,
+      user:{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'user'
       },
-      code :
-      {
-        type: String
-      },
-      image :
-      {
-        type: String
-      },
-      verified: {
-        type: Boolean,
-        default: false,
-      },
-
-      
-      
     },
     {
       timestamps: true,
@@ -47,5 +34,5 @@ const UserSchema = mongoose.Schema({
   
 
 
-export default model("user" ,  UserSchema )
+export default model("offre" ,  OffreSchema )
 

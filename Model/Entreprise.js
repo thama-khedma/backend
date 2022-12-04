@@ -37,9 +37,18 @@ const EntrepriseSchema = mongoose.Schema({
       },  
       location: {
         type:LocationSchema
+      },
+      adresse:{
+        type: String
+      },
+      description :{
+        type : String
+      },
+      image:
+      {
+          type:String,
       }
       
-     
       
     },
     

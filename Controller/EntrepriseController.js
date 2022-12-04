@@ -2,7 +2,7 @@
 import { parse } from "dotenv";
 import Entreprise from "../Model/Entreprise.js";
 import User from "../Model/User.js";
-
+import Offre from "../Model/Offre.js"
 
 export async function deleteEntreprise(req,res){
   
@@ -10,7 +10,7 @@ export async function deleteEntreprise(req,res){
   
       var entreprise = await Entreprise.findOneAndRemove({
         _id:id,
-          nom: req.body.first_nom
+          name: req.body.name
       })
       res.status(200).json("Entreprise Supprime")
   
@@ -20,10 +20,10 @@ export async function UpdateEntreprise(req,res){
   
       var entreprise = await Entreprise.findOneAndUpdate({
         _id:id,
-          nom:req.body.nom,
+          name:req.body.name,
           adresse:req.body.adresse,
           email: req.body.email,
-          numTel:req.body.numTel
+          user : req.body.user,
       })
       res.status(200).json("Entreprise Modifier")
   }
@@ -44,10 +44,15 @@ export async function UpdateEntreprise(req,res){
          name : req.body.name,
          email : req.body.email,
          user : req.body.user,
+         adresse : req.body.adresse,
+         description: req.body.description,
          location:{
           type : req.body.location.type,
           coordinates : req.body.location.coordinates
-         }
+         },
+         
+         
+        
       })
       entreprise.save;
     
@@ -55,12 +60,14 @@ export async function UpdateEntreprise(req,res){
 
   export async function find_Entreprise(req,res){
     try {
-      const latitude   =  req.body.latitude;
-      const longitude  =  req.body.longitude;
+      const latitude   =  req.params.latitude;
+      const longitude  =  req.params.longitude;
 
       const EntrepriseData = await Entreprise.aggregate([{
         $geoNear: {
-          near:{type:"Point",coordinates:[parseFloat(longitude),parseFloat(latitude)]},
+          latitude:latitude,
+          longitude:longitude,
+          near:{type:"Point",coordinates:[parseFloat(latitude),parseFloat(longitude)]},
           key :"location",
           maxDistance   :  parseFloat(60)*1609,
           distanceMultiplier: 0.000621371,

@@ -1,7 +1,8 @@
 import express from'express' ;
 import  {RegisterUser,Login,UpdateUser,resetPass, deleteUser, GetUser, verify , forgetPass, getAllUsers} from"../Controller/UserController.js" ;
 import  {verifyToken}  from '../middleware/auth.js';
-
+import multer from 'multer';
+import multerConfig from '../middleware/multer-config.js';
 const router = express.Router();
 /**
  * @swagger

@@ -5,11 +5,7 @@ import User from "../Model/User.js"
 import sendEmail from "../middleware/nodemail.js"
 import resetpassword from "../views/codetemplate.js";
 import verifymail from "../views/templates.js";
-
-
-
-
-
+import multer from "multer";
 
 export async function RegisterUser(req , res){
  
@@ -40,6 +36,8 @@ export async function RegisterUser(req , res){
       last_name,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
+    
+      
       
        
     });
