@@ -98,3 +98,14 @@ export async function UpdateEntreprise(req,res){
       console.log("");
     }
   }
+  export async function GetOffreByEntreprise(req,res){
+    let data = await Offre.find(
+      {
+        "or":[
+          {name:{$regex:req.params}}
+        ]
+      }
+    )
+    res.send(data)
+    
+  }
