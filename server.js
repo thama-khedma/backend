@@ -9,6 +9,7 @@ import dotenv from"dotenv" ;
 import session from "express-session"
 import multer from "multer";
 import OffreRoute from './Routes/Offre.js'
+import path from "path"
 
 import GoogleStrategy from "passport-google-oauth2"
 import FacebookStrategy from "passport-facebook"
@@ -146,9 +147,27 @@ app.use("/user", UserRoute);
 app.use("/entreprise",EntrepriseRoute)
 app.use("/offre",OffreRoute)
 
+/* Upload Image */
+app.use('/user/upload', express.static('public/images/userImages'));
 
 
+// multer Configuration
 
+const storage = multer.diskStorage({
+  destination: (req,file, cb) => {
+    cb( null , './public/images/userImages')
+  },
+  filename:  (req, file ,cb) => {
+        
+        cb(null,`${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+  }
+})
+
+const upload = multer({storage: storage}) 
+
+app.post("/user/profileimage", upload.single('upload'), (req,res) => {
+  res.send("Image uploaded")
+})
 
 /* Demarrer le serveur a l'ecoute des connexions */
 app.listen(port, () => {

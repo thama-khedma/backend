@@ -2,7 +2,19 @@ import express from'express' ;
 import  {RegisterUser,Login,UpdateUser,resetPass, deleteUser, GetUser, verify , forgetPass, getAllUsers} from"../Controller/UserController.js" ;
 import  {verifyToken}  from '../middleware/auth.js';
 import multer from 'multer';
+import path from "path"
 import multerConfig from '../middleware/multer-config.js';
+
+const storage = multer.diskStorage({
+  destination: (req,file, cb) => {
+    cb( null , './public/images/userImages')
+  },
+  filename:  (req, file ,cb) => {
+        
+        cb(null,`${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+  }
+})
+const upload = multer({storage: storage}) 
 const router = express.Router();
 /**
  * @swagger
@@ -62,7 +74,7 @@ const router = express.Router();
  *       500:
  *         description: Some server error
  */
-router.route('/compte').post(RegisterUser)
+router.route('/compte').post(upload.single('image'),RegisterUser)
 /**
  * @swagger
  *  /user/profil/{id}:

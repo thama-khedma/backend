@@ -36,6 +36,10 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         default: false,
       },
+      image : {
+        data:Buffer,
+        type : String 
+      }
 
       
       

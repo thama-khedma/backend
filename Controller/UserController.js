@@ -13,8 +13,11 @@ export async function RegisterUser(req , res){
     // Get user input
     const { first_name , last_name, email , password } = req.body;
     
+    const image = {
+      data : req.file.filename,
+    }
     // Validate user input
-    if (!(email && password && first_name && last_name)) {
+    if (!(email && password && first_name && last_name && image)) {
       res.status(400).send("All input is required");
     }
 
@@ -29,13 +32,14 @@ export async function RegisterUser(req , res){
     //Encrypt user password
     
    const  encryptedPassword = await bcrypt.hash(password, 10);
-
+   
     // Create user in our database
     const user = await User.create({
       first_name,
       last_name,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
+      image : req.file.filename
     
       
       
