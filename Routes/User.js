@@ -155,7 +155,7 @@ router.route('/Login') .post(Login)
  *         description: Some errors happend.
  *
  */
-router.route('/updateUser/:id').post(UpdateUser);
+router.route('/updateUser/:id').post(upload.single('image'),UpdateUser);
 /**
  * @swagger
  * /user/resetpwd:

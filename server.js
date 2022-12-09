@@ -163,11 +163,7 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({storage: storage}) 
 
-app.post("/user/profileimage", upload.single('upload'), (req,res) => {
-  res.send("Image uploaded")
-})
 
 /* Demarrer le serveur a l'ecoute des connexions */
 app.listen(port, () => {

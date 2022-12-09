@@ -20,6 +20,7 @@ const OffreSchema = mongoose.Schema({
       },
       entreprise: {
         type : mongoose.Schema.Types.ObjectId,
+        typeof : String,
         ref : 'entreprise'
       },
       user:{

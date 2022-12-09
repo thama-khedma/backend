@@ -7,6 +7,7 @@ import resetpassword from "../views/codetemplate.js";
 import verifymail from "../views/templates.js";
 import multer from "multer";
 
+
 export async function RegisterUser(req , res){
  
  try {
@@ -110,21 +111,43 @@ export async function Login(req,res){
   // Our register logic ends here
 }
 export async function UpdateUser(req,res){
-  const  { first_name , last_name, email , password } = req.body;
-  const  encryptedPassword = await bcrypt.hash(password, 10);
-  const user =  await User.findOne({_id:req.params.id})
-    if(!user){
-      res.send("User introuvable")
-    }else{
-  user.first_name=first_name;
-  user.last_name=last_name;
-      user.email=email;
-      user.password=encryptedPassword;
-      user.save();
-      res.json(user)
+
+  try {
+    // Get user input
+    const { first_name , last_name, email , password} = req.body;
+    const  id=req.params.id;
+    const image = {
+      data : req.file.filename,
+      
     }
+   const  encryptedPassword = await bcrypt.hash(password, 10);
+
+    // Create user in our database
+    const user = await User.findOneAndUpdate({
+      
+      _id:id,
+      first_name : first_name,
+      last_name: last_name,
+      email: email.toLowerCase(), // sanitize: convert email to lowercase
+      password: encryptedPassword,
+      image : req.file.filename
     
-  }   
+      
+      
+       
+    });
+
+
+        res.send(user);
+      
+    // return new user
+    
+  } catch (err) {
+    console.log(err);
+  }
+  // Our 
+
+}   
 export async function resetPass(req,res){
   
   var user = await User.findOne({

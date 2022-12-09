@@ -2,6 +2,7 @@ import Offre from "../Model/Offre.js";
 import Entreprise from "../Model/Entreprise.js";
 import User from "../Model/User.js";
 
+
 export async function deleteOffre(req,res){
   
     const  id=req.params.id;
@@ -64,4 +65,19 @@ export async function UpdateOffre(req,res){
     })
     offre.save;
   
+}
+
+export async function GetOffreByEntreprise(req,resp){
+  
+  let data = await Offre.find(
+    {
+      
+        "$or":[
+   
+            { entreprise :req.params.key}
+        ]
+    }
+)
+resp.send(data);
+
 }
