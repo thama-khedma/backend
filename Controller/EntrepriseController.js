@@ -18,14 +18,14 @@ export async function deleteEntreprise(req,res){
 export async function UpdateEntreprise(req,res){
     const  id=req.params.id;
   
-      var entreprise = await Entreprise.findOneAndUpdate({
-        _id:id,
+      var entreprise = ({
           name:req.body.name,
           adresse:req.body.adresse,
           email: req.body.email,
           user : req.body.user,
       })
-      res.status(200).json("Entreprise Modifier")
+      return await Entreprise.findOneAndUpdate({'_id': id} , entreprise)
+      
   }
 
   export async function getAllEntreprise(req,res){

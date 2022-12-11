@@ -7,12 +7,11 @@ import swaggerUi from 'swagger-ui-express'
 import passport from "passport"
 import dotenv from"dotenv" ;
 import session from "express-session"
-import multer from "multer";
 import OffreRoute from './Routes/Offre.js'
-import path from "path"
-
+import CondidatureRoute from "./Routes/Condidature.js";
 import GoogleStrategy from "passport-google-oauth2"
 import FacebookStrategy from "passport-facebook"
+
 
 dotenv.config({path:'./config/config.env' });
 
@@ -146,22 +145,11 @@ app.use(express.json());
 app.use("/user", UserRoute);
 app.use("/entreprise",EntrepriseRoute)
 app.use("/offre",OffreRoute)
-
-/* Upload Image */
-app.use('/user/upload', express.static('public/images/userImages'));
+app.use("/condidature",CondidatureRoute)
 
 
-// multer Configuration
 
-const storage = multer.diskStorage({
-  destination: (req,file, cb) => {
-    cb( null , './public/images/userImages')
-  },
-  filename:  (req, file ,cb) => {
-        
-        cb(null,`${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
-})
+
 
 
 

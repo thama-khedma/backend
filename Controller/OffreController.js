@@ -17,15 +17,15 @@ export async function deleteOffre(req,res){
 export async function UpdateOffre(req,res){
     const  id=req.params.id;
   
-      var offre = await Offre.findOneAndUpdate({
-        _id:id,
+      var offre = ({    
           name:req.body.name,
           description:req.body.description,
           user : req.body.user,
           entreprise: req.body.email,
           
       })
-      res.status(200).json("Offre Modifier")
+      return await Offre.findOneAndUpdate({'_id': id} , offre),
+      res.status(200).json({offre})
   }
 
   export async function getAllOffre(req,res){
