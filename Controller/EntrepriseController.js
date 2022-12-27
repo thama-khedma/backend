@@ -10,10 +10,8 @@ export async function deleteEntreprise(req,res){
   
       var entreprise = await Entreprise.findOneAndRemove({
         _id:id,
-          name: req.body.name
       })
       res.status(200).json("Entreprise Supprime")
-  
 }
 export async function UpdateEntreprise(req,res){
     const  id=req.params.id;
@@ -46,11 +44,9 @@ export async function UpdateEntreprise(req,res){
          user : req.body.user,
          adresse : req.body.adresse,
          description: req.body.description,
-         location:{
-          type : req.body.location.type,
-          coordinates : req.body.location.coordinates
-         },
          
+         image: `${req.file.filename}`
+
          
         
       })

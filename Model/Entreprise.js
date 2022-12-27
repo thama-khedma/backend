@@ -13,11 +13,9 @@ const LocationSchema = mongoose.Schema({
     type: {
       type: String, // Don't do `{ location: { type: String } }`
       enum: ['Point'], // 'location.type' must be 'Point'
-      required: true
     },
     coordinates: {
       type: [Number,Number],
-      required: true
     }
  
 });
@@ -44,9 +42,13 @@ const EntrepriseSchema = mongoose.Schema({
       description :{
         type : String
       },
-      image:
+      image :
       {
-          type:String,
+        type: String
+      },
+      image : {
+        data:Buffer,
+        type : String 
       }
       
       

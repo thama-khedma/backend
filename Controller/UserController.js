@@ -38,7 +38,7 @@ export async function RegisterUser(req , res){
        last_name,
        email: email.toLowerCase(), // sanitize: convert email to lowercase
        password: encryptedPassword,
-       
+       image: `${req.file.filename}`
      
        
        

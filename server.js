@@ -17,7 +17,9 @@ dotenv.config({path:'./config/config.env' });
 
 const app = express();
 app.use(express.urlencoded({extended: true, limit: '50mb'}));
-app.use("/img",express.static("public"));
+app.use("/img",express.static("public/images/userImages"));
+app.use("/imag",express.static("public/images/EntrepriseImages"));
+
 const options ={
   definition: {
     openapi : '3.0.0',
