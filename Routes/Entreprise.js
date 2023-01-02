@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 const router = express.Router();
 router.post('/delete/:id',deleteEntreprise)
 router.post('/update/:id',UpdateEntreprise)
-router.route('/Add').post(upload.single('image'),AddEntreprise)
+router.route('/Add').post(AddEntreprise)
 router.get('/',getAllEntreprise)
 router.post('/find/:latitude/:longitude',find_Entreprise)
 router.get('/GetEntreprise/:id',GetEntreprise)

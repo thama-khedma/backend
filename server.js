@@ -79,6 +79,9 @@ app.set("view engine","ejs")
 app.get('/Gmail',(req,res)=>{
   res.render("index")
 })
+app.get('/privecy',(req,res)=>{
+  res.render("pr")
+})
 app.get('/Facebook',(req,res)=>{
   res.render("facebook")
 })

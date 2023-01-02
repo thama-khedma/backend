@@ -42,14 +42,6 @@ const EntrepriseSchema = mongoose.Schema({
       description :{
         type : String
       },
-      image :
-      {
-        type: String
-      },
-      image : {
-        data:Buffer,
-        type : String 
-      }
       
       
     },

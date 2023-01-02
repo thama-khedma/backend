@@ -44,11 +44,10 @@ export async function UpdateEntreprise(req,res){
          user : req.body.user,
          adresse : req.body.adresse,
          description: req.body.description,
-         
-         image: `${req.file.filename}`
-
-         
-        
+         location:{
+          type : req.body.location.type,
+          coordinates : req.body.location.coordinates
+         }, 
       })
       entreprise.save;
     
