@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken"
 import otpGenerator from "otp-generator";
 import User from "../Model/User.js"
 import sendEmail from "../middleware/nodemail.js"
-import resetpassword from "../views/codetemplate.js";
-import verifymail from "../views/templates.js";
+import resetpassword from "../Controller/template/codetemplate.js";
+import verifymail from "../Controller/template/templates.js";
 import multer from "multer";
 
 
@@ -12,9 +12,9 @@ export async function RegisterUser(req , res){
  
   try {
      // Get user input
-     const { first_name , last_name, email , password } = req.body;
+     const { /*first_name , last_name,*/ email , password } = req.body;
      // Validate user input
-     if (!(email && password && first_name && last_name)) {
+     if (!(email && password/* && first_name && last_name*/)) {
        res.status(400).send("All input is required");
      }
      // check if user already exist
@@ -31,67 +31,68 @@ export async function RegisterUser(req , res){
     
      // Create user in our database
      const user = await User.create({
-       first_name,
-       last_name,
+      /* first_name,
+       last_name,*/
        email: email.toLowerCase(), // sanitize: convert email to lowercase
        password: encryptedPassword,
-       image: `${req.file.filename}`        
+      /* image: `${req.file.filename}`  */      
      });
+
     const message = `${process.env.URL}/user/verify/${user.id}`;
-    const name = +user.first_name+" "+user.last_name;
+    const name = +user.email;
     const v = await verifymail(name,message);
-    await sendEmail(user.email, "Verify Email", v);
- 
-    
-     
+    //await sendEmail(user.email, "Verify Email", v);
          res.send(user);
-       
      // return new user
-     
    } catch (err) {
      console.log(err);
    }
+  const u = await User.findOne({
+  email:req.body.email});
+  var message = `${u.id}`;
+  var name =  u.username;
+  var v = await verifymail(name,message);
+     // sendEmail( u.email, "Verify Email", v);
    // Our register logic ends here
  };
 
 
 
 
-
 export async function Login(req,res){
-  
-    
  // Our login logic starts here
  try {
   // Get user input
   const {email , password } = req.body;
-
-
   // Validate user input
   if (! (email && password) ) {
     res.status(400).send("All input is required");
   }
     // Validate if user exist in our database
     const user = await User.findOne({ email: email.toLowerCase() });
-    if(user.email!=req.body.email){
-      res.send('Please Verifiez Ton Email')
+    if(!user)
+  {
+      return res.status(404).send('Invalid email or password')
+  }
+
+  if(user.email!=req.body.email){
+    res.send('Please Verifiez Ton Email')
+  }
+
+  //if(!user.verified){return res.status(401).send('user not verified')}
+
+  const checkPassword = await bcrypt.compare(password, user.password);
+    if(!checkPassword)
+    {
+        return res.status(404).send('Invalid password');
     }
-    if (user && (await bcrypt.compare(password, user.password))) {
-      // Create token
-      
-     
-    
-      const token = jwt.sign({_id:user._id}, 'privateKey')
-      res.header('x-access-token',token).status(200).json({message : "login avec succeés",user});
-     
-     
-     
-    }
-    
+
+    const token = jwt.sign({_id:user._id}, 'privateKey')
+    res.header('x-auth-token',token).status(200).send(user);
+
   } catch (err) {
     console.log(err);
-  }
-  // Our register logic ends here
+  } // Our register logic ends here
 }
 export async function UpdateUser(req,res){
 
@@ -99,61 +100,50 @@ export async function UpdateUser(req,res){
     // Get user input
     const { first_name , last_name, email , password} = req.body;
    
-    const image = {
+    /*const image = {
       data : req.file.filename,
       
-    }
-   const  encryptedPassword = await bcrypt.hash(password, 10);
+    }*/
+   //const  encryptedPassword = await bcrypt.hash(password, 10);
    const  id=req.params.id;
     // Create user in our database
     const user = ({
       first_name,
       last_name,
-      email: email.toLowerCase(), // sanitize: convert email to lowercase
-      password: encryptedPassword,
-      image : req.file.filename
+      email, // sanitize: convert email to lowercase
+      //password: encryptedPassword,
+      //image : req.file.filename
 
     });
     return await User.findOneAndUpdate({'_id': id} , user),
-  
-
-      
-
-
     res.json({user})
-      
     // return new user
-    
   } catch (err) {
     console.log(err);
   }
   // Our 
 
 }   
+
 export async function resetPass(req,res){
-  
   var user = await User.findOne({
     email:req.body.email});
-
-    
-    if(!user){
-      res.json({
+    if(!user)
+      res.send({
         msg:'user not found'
       })
-    }else{ 
-      var a = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-      user.code=a;
+      var a = otpGenerator.generate(4, { digits:true,lowerCaseAlphabets : false, upperCaseAlphabets: false, specialChars: false });
+      user.code = a;
+      var name = user.username;
       user.save();
-      const message = `votre code est `+user.code;
-      
-      const v = await resetpassword(message)
-      await sendEmail(user.email, "Verify Email", message);
+      var message =a;
+    const v = await resetpassword(name,message);
+    sendEmail(user.email,"Reset Password Email",v);
       res.send({
-        message:"email envoyer pour le code de mise a jour du mot de passe"
+        msg:'email sent'
       })
-    }
-
 }
+
 export async function forgetPass(req,res){
   try {
     const user = await User.findOne({ code:req.body.code });

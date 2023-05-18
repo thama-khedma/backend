@@ -10,17 +10,16 @@ const {model} = mongoose;
 
 
 const CondidatureSchema = mongoose.Schema({
-      entreprise_name:{
+      entreprise:{
         type : mongoose.Schema.Types.Mixed,
         typeof : String ,
         ref : 'entreprise'
       },
-      offre_description: {
-        type : mongoose.Schema.Types.Mixed,
-        typeof : String,
-        ref : 'offre'
-      },
       user:{
+        type : mongoose.Schema.Types.Mixed,
+        ref : 'user'
+      },
+      useremail:{
         type : mongoose.Schema.Types.Mixed,
         ref : 'user'
       },

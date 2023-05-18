@@ -74,7 +74,7 @@ const router = express.Router();
  *       500:
  *         description: Some server error
  */
-router.route('/compte').post(upload.single('image'),RegisterUser)
+router.route('/compte').post(/*upload.single('image'),*/RegisterUser)
 /**
  * @swagger
  *  /user/profil/{id}:
@@ -155,7 +155,7 @@ router.route('/Login') .post(Login)
  *         description: Some errors happend.
  *
  */
-router.route('/updateUser/:id').post(upload.single('image'),UpdateUser);
+router.route('/updateUser/:id').post(UpdateUser);
 /**
  * @swagger
  * /user/resetpwd:
@@ -170,7 +170,7 @@ router.route('/updateUser/:id').post(upload.single('image'),UpdateUser);
  *             $ref: '#/components/schemas/User'
  *     responses:
  *       200:
- *         description: The code  was successfully sent
+ *         description: The code  was successfully sent 
  *         content:
  *           application/json:
  *             schema:
@@ -222,7 +222,7 @@ router.post('/resetpwd',resetPass)
  *          description: The user was not found
  *
  */
-router.delete('/delete/:id',verifyToken,deleteUser)
+router.delete('/delete/:id',deleteUser)
 /**
  * @swagger
  * /user/verify/{id}:
@@ -248,7 +248,7 @@ router.delete('/delete/:id',verifyToken,deleteUser)
  *       400:
  *         description: User can not be found
  */
-router.get('/verify/:id',verifyToken,verify)
+router.get('/verify/:id',verify)
 
 router.get('/',getAllUsers)
 

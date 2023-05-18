@@ -1,5 +1,5 @@
 import express from'express' ;
-import { AddCondidature, deleteCondidature, getAllCondidature, UpdateCondidature } from '../Controller/CondidatureController.js';
+import { AddCondidature, acceptCondidature,refuseCondidature, getAllCondidature, UpdateCondidature } from '../Controller/CondidatureController.js';
 
 
 
@@ -8,10 +8,11 @@ import { AddCondidature, deleteCondidature, getAllCondidature, UpdateCondidature
 
 
 const router = express.Router();
-router.post('/delete/:id',deleteCondidature)
-router.post('/update/:id',UpdateCondidature)
+router.get('/Accept/:id',acceptCondidature)
+router.get('/Refuse/:id',refuseCondidature)
+router.get('/update/:id',UpdateCondidature)
 router.post('/Add',AddCondidature)
-router.get('/',getAllCondidature)
+router.get('/getAllCondidature/',getAllCondidature)
 
 
 

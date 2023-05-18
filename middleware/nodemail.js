@@ -9,16 +9,16 @@ const sendEmail = async (email, subject, text) => {
       host: "smtp.gmail.com",
       port: 587,
       auth: {
-        user: "mohamedjasser.bensmida@esprit.tn", // generated ethereal user
-        pass: "Mamapapa101", // generated ethereal password
+        user: "monaem.hmila@esprit.tn", // generated ethereal user
+        pass: "ayeiqxogruymphpo", // generated ethereal password
       },
     });
 
     await transporter.sendMail({
-      from:  process.env.USER,
+      from:  "monaem.hmila@esprit.tn",
       to: email,
       subject: subject,
-      text: text,
+      html: text,
     });
     console.log("email sent sucessfully");
   } catch (error) {

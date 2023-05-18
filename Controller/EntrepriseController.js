@@ -3,6 +3,8 @@ import { parse } from "dotenv";
 import Entreprise from "../Model/Entreprise.js";
 import User from "../Model/User.js";
 import Offre from "../Model/Offre.js"
+import Accepted from "../Controller/template/Accepted.js";
+import Refused from "../Controller/template/refused.js";
 
 export async function deleteEntreprise(req,res){
   
@@ -11,7 +13,7 @@ export async function deleteEntreprise(req,res){
       var entreprise = await Entreprise.findOneAndRemove({
         _id:id,
       })
-      res.status(200).json("Entreprise Supprime")
+      res.status(200)
 }
 export async function UpdateEntreprise(req,res){
     const  id=req.params.id;
@@ -36,22 +38,35 @@ export async function UpdateEntreprise(req,res){
   }
 
  
-  export async function AddEntreprise(req,res){
-    
-      var entreprise = await Entreprise.create({
-         name : req.body.name,
-         email : req.body.email,
-         user : req.body.user,
-         adresse : req.body.adresse,
-         description: req.body.description,
-         location:{
-          type : req.body.location.type,
-          coordinates : req.body.location.coordinates
-         }, 
-      })
-      entreprise.save;
-    
+  export async function AddEntreprise(req, res) {
+    try {
+      const entreprise = await Entreprise.create({
+        name: req.body.name,
+        email: req.body.email,
+        user: req.body.user,
+        adresse: req.body.adresse,
+        description: req.body.description,
+        location: {
+          type: req.body.location.type,
+          coordinates: req.body.location.coordinates,
+        },
+      });
+  
+      res.status(201).json({
+        status: 'success',
+        data: {
+          entreprise,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'Internal Server Error',
+      });
+    }
   }
+  
 
   export async function find_Entreprise(req,res){
     try {

@@ -11,7 +11,7 @@ export async function deleteOffre(req,res){
         _id:id,
      
       })
-      res.status(200).json("Offre Supprime")
+      res.status(200).json(offre)
   
 }
 export async function UpdateOffre(req,res){
@@ -28,14 +28,21 @@ export async function UpdateOffre(req,res){
       res.status(200).json({offre})
   }
 
-  export async function getAllOffre(req,res){
+  export async function getAllOffre(req, res) {
     try {
-        const offre = await Offre.find()
-        res.json(offre)
+        const entrepriseId = req.params.entreprise;
+        let query = {};
+        if (entrepriseId) {
+            query = { entreprise: entrepriseId };
+        }
+        const offres = await Offre.find(query).populate('entreprise');
+        res.json(offres);
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
-  }
+}
+
+  
   export async function getOffre(req,res){
     try {
 
@@ -50,22 +57,20 @@ export async function UpdateOffre(req,res){
       } catch (error) {
         console.log("");
       }
-
   }
+
   export async function AddOffre(req,res){
     
     var offre = await Offre.create({
        name : req.body.name,
        entreprise : req.body.entreprise,
        user : req.body.user,
-      
        description: req.body.description,
-       
-      
-    })
-    offre.save;
-  
+    });
+
+    res.status(201).json(offre);
 }
+
 
 export async function GetOffreByEntreprise(req,resp){
   

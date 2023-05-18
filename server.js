@@ -29,7 +29,7 @@ const options ={
     },
     servers:[
       {
-        url: 'http://localhost:3000/'
+        url: 'http://127.0.0.1:3000/'
       }
     ],
     components: {
@@ -50,6 +50,91 @@ const options ={
   },
   apis: ["./Routes/*.js"],
 }
+
+
+import http from "http";
+import { v4 as uuidv4 } from "uuid";
+import { ExpressPeerServer } from "peer";
+import socketio from "socket.io";
+const opinions = {
+  debug: true,
+}
+
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+
+const server = http.createServer(app);
+const io = socketio(server, { 
+  cors: {
+    origin: '*'
+  }
+});
+
+const peerServer = ExpressPeerServer(server, opinions);
+app.use("/peerjs", peerServer);
+
+app.get("/joinLive", (req, res) => {
+  res.redirect(`/${uuidv4()}`);
+});
+
+app.get("/:room", (req, res) => {
+  
+  var name = req.query.name
+  console.log(name)
+  if(name==''){
+    var succes=false;
+  }else{
+    succes=true
+  }
+  res.render("room", { roomId: req.params.room , user:name , succes:succes});
+});
+
+const connectedUsers = {};
+io.on("connection", (socket) => {
+  let room;
+  let idUser;
+  socket.on("join-room", (roomId, userId, userName) => {
+    if (usernameAlreadyExists(userName)) {
+      console.log('exist')
+      // User is already connected, prevent them from joining again
+      socket.emit("user-not-allowed");
+      return;
+    }
+    connectedUsers[userId] = userName;
+    console.log(connectedUsers);
+    room=roomId;
+    idUser=userId;
+    socket.join(roomId);
+    setTimeout(()=>{
+      socket.to(roomId).broadcast.emit("user-connected", userId);
+    }, 1000)
+    socket.on("message", (message) => {
+      io.to(roomId).emit("createMessage", message, userName);
+    });
+  });
+
+  socket.on("disconnect", () => {
+    // Remove the user from the list of connected users when they disconnect
+    for (const userId in connectedUsers) {
+      if (connectedUsers.hasOwnProperty(userId) && userId === socket.id) {
+        delete connectedUsers[userId];
+        console.log(connectedUsers)
+        break;
+      }
+    }
+    // Notify other clients that the user has disconnected
+    socket.to(room).broadcast.emit("user-disconnected", idUser);
+    
+    // Rest of the code to handle the video call
+  });
+});
+
+function usernameAlreadyExists(username) {
+  return Object.values(connectedUsers).includes(username);
+}
+export default server;
+mongoose.set("debug", true);
+mongoose.Promise = global.Promise;
 const GoogleStrategyNew = GoogleStrategy.Strategy
 const FacebookStrategyNew = FacebookStrategy.Strategy
  var googleuser = (request, accessToken, refreshToken, profile, done) => {
@@ -70,7 +155,7 @@ passport.use(new GoogleStrategyNew({
 passport.use(new FacebookStrategyNew({
   clientID: "1511424022697021",
   clientSecret : "69f83c8a7766742fd3d8ee5841f383d7",
-  callbackURL: "http://localhost:3000/facebook/callback",
+  callbackURL: "http://127.0.0.1:3000/facebook/callback",
   profilesFilds:['id','displayName','name','gender','picture.type']
   
 },facebookuser
@@ -137,7 +222,7 @@ const port = process.env.PORT || 9090; // Le port du serveur
   mongoose.Promise = global.Promise;
 
   mongoose
-    .connect(`mongodb://localhost:27017/${databaseName}`)
+    .connect(`mongodb://127.0.0.1:27017/${databaseName}`)
     .then(() => {
       console.log(`connected to ${databaseName}`);
     })
@@ -159,7 +244,6 @@ app.use("/condidature",CondidatureRoute)
 
 
 /* Demarrer le serveur a l'ecoute des connexions */
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
-});
+
+server.listen(port)
 

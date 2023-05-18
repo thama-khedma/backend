@@ -15,10 +15,10 @@ const storage = multer.diskStorage({
   })
   const upload = multer({storage: storage}) 
 const router = express.Router();
-router.post('/delete/:id',deleteEntreprise)
-router.post('/update/:id',UpdateEntreprise)
+router.delete('/delete/:id',deleteEntreprise)
+router.put('/update/:id',UpdateEntreprise)
 router.route('/Add').post(AddEntreprise)
-router.get('/',getAllEntreprise)
+router.get('/getAllEntreprise/',getAllEntreprise)
 router.post('/find/:latitude/:longitude',find_Entreprise)
 router.get('/GetEntreprise/:id',GetEntreprise)
 

@@ -23,11 +23,9 @@ const LocationSchema = mongoose.Schema({
 const EntrepriseSchema = mongoose.Schema({
       name: {
         type: String,
-        require: true,
       },
       email: {
         type: String,
-        required:true
       },
       user : {
         type : mongoose.Schema.Types.ObjectId,
@@ -36,7 +34,7 @@ const EntrepriseSchema = mongoose.Schema({
       location: {
         type:LocationSchema
       },
-      adresse:{
+      adresse:{ 
         type: String
       },
       description :{
@@ -49,14 +47,6 @@ const EntrepriseSchema = mongoose.Schema({
     
   );
   
-  export function EntrepriseValidate(entreprise){
-    const schema = Joi.object({
-        name: Joi.string().min(4).max(10).required(),
-        email: Joi.string().required(),
-    });
-
-    return schema.validate(entreprise);
-}
 EntrepriseSchema.index({location:"2dsphere"})  
 export default model("entreprise" ,  EntrepriseSchema)
 

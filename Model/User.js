@@ -12,7 +12,7 @@ const {model} = mongoose;
 const UserSchema = mongoose.Schema({
       first_name: {
         type: String,
-        require: true,
+        
       },
       last_name: {
         type: String,
@@ -23,6 +23,10 @@ const UserSchema = mongoose.Schema({
       },
       password:{
         type: String,
+      },
+      Role:{
+        type: String,
+        default: "employe"
       },
       code :
       {
@@ -36,10 +40,10 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         default: false,
       },
-      image : {
+      /*image : {
         data:Buffer,
         type : String 
-      }
+      }*/
 
       
       

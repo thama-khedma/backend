@@ -19,11 +19,10 @@ const OffreSchema = mongoose.Schema({
        
       },
       entreprise: {
-        type : mongoose.Schema.Types.Mixed,
-        typeof : String,
+        type : mongoose.Schema.Types.ObjectId,
         ref : 'entreprise'
       },
-      user:{
+      user:{  
         type : mongoose.Schema.Types.ObjectId,
         ref : 'user'
       },
