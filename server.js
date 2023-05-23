@@ -217,18 +217,16 @@ app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerSpec))
 const databaseName = "jasser"; // L'@ du serveur
 const port = process.env.PORT || 9090; // Le port du serveur
 
-
-  mongoose.set("debug", true);
-  mongoose.Promise = global.Promise;
-
-  mongoose
-    .connect(`mongodb://127.0.0.1:27017/${databaseName}`)
-    .then(() => {
-      console.log(`connected to ${databaseName}`);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+mongoose.connect('mongodb+srv://mohamedjasser:L8xe0h4ZuPBa2yPq@backendnodejs.4fkx6tv.mongodb.net/', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}, (err) => {
+  if (!err) {
+    console.log('MongoDB Connection Succeeded.');
+  } else {
+    console.log('Error in DB connection : ' + err);
+  }
+});
 
 app.use(express.json());
 
